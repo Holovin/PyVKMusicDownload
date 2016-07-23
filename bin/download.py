@@ -13,7 +13,6 @@ def main():
     logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.INFO)
     ########################################################
     FM.do_directory(Config.OUTPUT_DIRECTORY)
-
     n = Network()
     vk = VK(n, Config.USER_TOKEN)
 
@@ -21,7 +20,7 @@ def main():
     total = 1
 
     while current < total:
-        data = vk.api_get_user_wall(Config.USER_LINK, current, VK.WALL_MAX_COUNT)
+        data = vk.api_get_user_wall_raw(Config.USER_LINK, current, VK.WALL_MAX_COUNT, Config.USER_HASH)
         total = vk.json_wall_get_total(data)
 
         for record in data[VK.RESPONSE]['items']:
@@ -41,8 +40,8 @@ def main():
                     file_path = Config.OUTPUT_DIRECTORY + date + '/' + file_name
                     file_size = FM.file_size(file_path)
 
-                    if (not Config.OVERRIDE_EXISTS and file_size == 0) or file_size > 0:
-                        logging.info('Skip file [' + file_name + '] because it exist')
+                    if Config.SKIP_EXISTS and file_size > 0:
+                        logging.info('Skip file [' + file_name + '] because it exist (size: ' + str(file_size) + ')')
                         continue
 
                     logging.info('Getting file [' + file_name + ']...')
