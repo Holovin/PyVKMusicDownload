@@ -29,11 +29,11 @@ class Network:
     def _get_cookie_value(self, name):
         return self.session.cookies.get(name)
 
-    def do_get(self, url):
+    def do_get(self, url, param_stream=False):
         logging.debug("Get url: " + url)
 
         try:
-            self.last_answer = self.session.get(url, headers=Config.HEADERS)
+            self.last_answer = self.session.get(url, headers=Config.HEADERS, stream=param_stream)
             logging.debug("Result url (" + str(self.last_answer.status_code) + " : " + self.last_answer.url + ")")
 
             if self.last_answer.url.lower() != url.lower():
@@ -45,6 +45,9 @@ class Network:
 
         logging.debug("Getting url... ok")
         return True
+
+    def _get_url(self):
+        return self.last_answer.url
 
     def do_post(self, url, data):
         logging.debug("Post url: " + url)
