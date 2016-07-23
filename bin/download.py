@@ -10,7 +10,7 @@ from lib.vk import VK
 
 
 def main():
-    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG)
+    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.INFO)
     ########################################################
     FM.do_directory(Config.OUTPUT_DIRECTORY)
 
@@ -32,7 +32,7 @@ def main():
             FM.do_directory(Config.OUTPUT_DIRECTORY + date)
 
             if VK.ATTACHMENTS not in record:
-                logging.debug('Skip date: ' + date + ' because post without audio')
+                logging.info('Skip date: ' + date + ' because post without audio')
                 continue
 
             for attach in record['attachments']:
@@ -41,8 +41,8 @@ def main():
                     file_path = Config.OUTPUT_DIRECTORY + date + '/' + file_name
                     file_size = FM.file_size(file_path)
 
-                    if not Config.OVERRIDE_EXISTS or file_size > 0:
-                        logging.debug('Skip file [' + file_name + '] because it exist')
+                    if (not Config.OVERRIDE_EXISTS and file_size == 0) or file_size > 0:
+                        logging.info('Skip file [' + file_name + '] because it exist')
                         continue
 
                     logging.info('Getting file [' + file_name + ']...')
